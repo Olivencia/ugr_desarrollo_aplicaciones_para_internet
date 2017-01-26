@@ -1,0 +1,354 @@
+{% extends "layout.html" %}
+{% block restaurants %}
+<h1 style="text-align: center; font-weight: bold">Restaurants</h1>
+<form id="rsearch" action="/restaurants/search" method="GET">
+	<div style="text-align: center">
+		<input type="search" placeholder="Search restaurants..." name="name">
+	</div>
+</form>
+<h2 style="text-align: center; font-weight: bold">Add new restaurant</h2>
+<form id="add_restaurant" action="/restaurants/" method="POST">
+	<div class="container register">
+		<div id="restaurant_form">
+			{% csrf_token %}	
+			<div>
+				<label><b>Name</b></label>
+				{{ form.rname }}	
+				<label><b>Cuisine</b></label>
+				{{ form.rcuisine }}	
+			</div>
+			<div>
+				<label><b>Borough</b></label>
+				{{ form.rborough }}	
+				<label><b>Street</b></label>
+				{{ form.rstreet }}	
+				<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
+			</div>
+			<div>
+				<label><b>Coord Y</b></label>
+				{{ form.rcoordy }}	
+				<label><b>Coord X</b></label>
+				{{ form.rcoordx }}	
+			</div>
+			<style type="text/css">
+				#street_map {width: 50%; height: 400px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
+			</style>
+			<body onload="initialize()">
+				<div id="street_map"></div>
+			</body>
+			<script type="text/javascript">
+				function localizeStreet(){
+					$('#address_button').click(function() {
+						$('#street_map').css('display', 'table');
+						google.maps.event.trigger(map, 'resize');
+						codeAddress();
+					});
+				}
+
+				var geocoder;
+				var map;
+				function initialize() {
+					geocoder = new google.maps.Geocoder();
+					var latlng = new google.maps.LatLng(-34.397, 150.644);
+					var mapOptions = {
+						zoom: 18,
+						center: latlng
+					}
+					map = new google.maps.Map(document.getElementById("street_map"), mapOptions);
+				}
+
+				function codeAddress() {
+					var address = document.getElementById("address").value;
+					geocoder.geocode( { 'address': address}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+
+							map.setCenter(results[0].geometry.location);
+							var marker = new google.maps.Marker({
+								map: map,
+								position: results[0].geometry.location
+							});
+							document.getElementById("add_coordx").value = marker.getPosition().lat();
+							document.getElementById("add_coordy").value = marker.getPosition().lng();
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
+				}
+
+			</script>
+			<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtFRgBJC2mWP5RXGEJzWtozjejpiuKY28&callback=initialize"></script>
+		</div>
+	<button class="wellcome button" type="submit" >Add</button>
+	{% if exists == True and restaurant %}
+		<h3 style="color: red">Restaurant {{restaurant.name}} already with same name</h3>
+	{% else %}
+		{% if exists == False and restaurant %}
+			<h3 style="color: green">Restaurant {{restaurant.name}} added successfully</h3>
+		{% endif %}
+	{% endif %}
+
+	</div>
+</form>
+<!--<form id="add_restaurant" action="/restaurants/" method="POST">
+	<div class="container register">
+		<div id="restaurant_form">
+			<div>
+				<label><b>Name</b></label>
+				<input type="text" placeholder="Enter Name of Restaurant" name="rname" required>
+
+				<label><b>Cuisine</b></label>
+				<input type="text" placeholder="Enter type of Food" name="rcuisine">
+			</div> 
+
+			<div> 
+				<label><b>Borough</b></label>
+				<input type="text" placeholder="Enter City" name="rborough">
+
+				<label><b>Street</b></label>
+				<input id="address" type="text" placeholder="Enter the street" name="rstreet" required>
+				<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
+			</div> 
+
+			<div> 
+				<label><b>Coord Y</b></label>
+				<input id="add_coordy" type="text" placeholder="Enter Y coord or localize" name="rcoordy" required>
+
+				<label><b>Coord X</b></label>
+				<input id="add_coordx" type="text" placeholder="Enter X coord or localize" name="rcoordx">
+			</div> 
+			<style type="text/css">
+				#street_map {width: 50%; height: 50%; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
+			</style>
+			<body onload="initialize()">
+				<div id="street_map"></div>
+			</body>
+			<script type="text/javascript">
+				function localizeStreet(){
+					$('#address_button').click(function() {
+						$('#street_map').css('display', 'table');
+						google.maps.event.trigger(map, 'resize');
+						codeAddress();
+					});
+				}
+				var geocoder;
+				var map;
+				function initialize() {
+					geocoder = new google.maps.Geocoder();
+					var latlng = new google.maps.LatLng(-34.397, 150.644);
+					var mapOptions = {
+						zoom: 18,
+						center: latlng
+					}
+					map = new google.maps.Map(document.getElementById("street_map"), mapOptions);
+				}
+
+				function codeAddress() {
+					var address = document.getElementById("address").value;
+					geocoder.geocode( { 'address': address}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+
+							map.setCenter(results[0].geometry.location);
+							var marker = new google.maps.Marker({
+								map: map,
+								position: results[0].geometry.location
+							});
+							document.getElementById("add_coordx").value = marker.getPosition().lat();
+							document.getElementById("add_coordy").value = marker.getPosition().lng();
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
+				}
+
+			</script>
+			<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtFRgBJC2mWP5RXGEJzWtozjejpiuKY28&callback=initialize"></script>
+			<button class="wellcome button" type="submit">Add</button>
+			{% if 'name' in restaurant %}
+			<h3 style="color: green">Restaurant {{restaurant.name}} added successfully</h3>
+			{% endif %}
+		</div>
+	</div>    
+</form>
+-->
+{% endblock %}
+
+
+{% block restaurants_search %}
+
+{% if restaurant %}
+	<h1 style="text-align: center; font-weight: bold">Restaurant {{restaurant.name}}</h1>
+	<div class="container register">
+		<div>
+			<span><b>Name</b></span>
+			<span>{{restaurant.name}} </span>
+
+			{% if restaurant.cuisine %}
+			<span><b>| Cuisine</b></span>
+			<span>{{restaurant.cuisine}} </span>	    
+			{% endif %}
+
+			{% if restaurant.borough %}
+			<span><b>| Borough</b></span>
+			<span>{{restaurant.borough}} </span>
+			{% endif %}
+
+			{% if restaurant.address and restaurant.address.street %}
+			<span><b>| Street</b></span>
+			<span>{{restaurant.address.street}} </span>
+			{% endif %}
+		</div> 
+		<div class="clearfix"></div>
+		<form style="display: inline-block" action="/restaurants/edit",  method="GET">
+			<input style="display: none" type="text" placeholder="Enter the street" value="{{r_id}}" name="id">
+			<button class="wellcome button" type="submit">Modify Restaurant</button>
+		</form>
+		<form style="display: inline-block" action="/restaurants/">
+			<button class="wellcome button" type="submit">Back to search</button>
+		</form>
+	</div>
+	<div id="all_tweets">
+		{% if tweets %}
+			{% for tweet in tweets %}
+				<div class="single_tweet">
+					<blockquote class="twitter-tweet">
+						<p lang="en" dir="ltr">{{tweet.text}}
+						</p>
+						<a href="https://twitter.com/{{tweet.user.screen_name}}/status/{{tweet.id}}"></a>
+					</blockquote> 
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
+	<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+{% else %}
+	<h2 style="text-align: center; font-weight: bold">No restaurant found</h2>
+	<div class="clearfix"></div>
+	<form style="display: table; margin: 0 auto; margin-bottom: 30px" action="/restaurants">
+		<button class="wellcome button" type="submit">Back to search</button>
+	</form>
+{% endif %}
+
+{% endblock %}
+
+
+{% block restaurants_edit %}
+
+<h1 style="text-align: center; font-weight: bold">Restaurant {{restaurant.name}} found!</h1>
+<form method="POST">
+	<div class="container register">
+		{% csrf_token %}	
+		<div>
+			<label><b>Name</b></label>
+			{{ form.rname }}	
+			<label><b>Cuisine</b></label>
+			{{ form.rcuisine }}	
+		</div>
+		<div>
+			<label><b>Borough</b></label>
+			{{ form.rborough }}	
+			<label><b>Street</b></label>
+			{{ form.rstreet }}	
+			<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
+		</div>
+		<div>
+			<label><b>Coord Y</b></label>
+			{{ form.rcoordy }}	
+			<label><b>Coord X</b></label>
+			{{ form.rcoordx }}	
+		</div>
+		<!--<div>
+			<label><b>Name</b></label>
+			<input type="text" placeholder="{{restaurant.name}}"" name="rname">
+
+			<label><b>Cuisine</b></label>
+			<input type="text" placeholder="{{restaurant.cuisine}}"" name="rcuisine">
+		</div> 
+		<div> 
+			<label><b>Borough</b></label>
+			<input type="text" placeholder="{{restaurant.borough}}" name="rborough">
+
+			<label><b>Street</b></label>
+			<input id="address" type="text" placeholder="{{restaurant.address.street}}" name="rstreet">
+			<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
+
+		</div> 
+		<div> 
+			<label><b>Coord Y</b></label>
+			<input id="add_coordy" type="text" placeholder="{{restaurant.address.coord.0}}" name="rcoordy">
+
+			<label><b>Coord X</b></label>
+			<input id="add_coordx" type="text" placeholder="{{restaurant.address.coord.1}}" name="rcoordx">
+		</div>-->
+		<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function(event){
+			document.getElementById("rname").placeholder = '{{ restaurant.name }}';
+			document.getElementById("rname").required = false;
+			document.getElementById("rname").value = '';
+			document.getElementById("rcuisine").placeholder = '{{ restaurant.cuisine }}';
+			document.getElementById("rcuisine").required = false;
+			document.getElementById("rcuisine").value = '';
+			document.getElementById("rborough").placeholder = '{{ restaurant.borough }}';
+			document.getElementById("rborough").required = false;
+			document.getElementById("rborough").value = '';
+			document.getElementById("address").placeholder = '{{ restaurant.address.street }}';
+			document.getElementById("address").required = false;
+			document.getElementById("address").value = '';
+			document.getElementById("add_coordx").placeholder = '{{ restaurant.address.coord.1 }}';
+			document.getElementById("add_coordx").required = false;
+			document.getElementById("add_coordx").value = '';
+			document.getElementById("add_coordy").placeholder = '{{ restaurant.address.coord.0 }}';
+			document.getElementById("add_coordy").required = false;
+			document.getElementById("add_coordy").value = '';
+		});
+
+		</script>
+		<style type="text/css">
+			#street_map {width: 50%; height: 50%; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
+		</style>
+		<body onload="initialize()">
+			<div id="street_map"></div>
+		</body>
+		<script type="text/javascript">
+			function localizeStreet(){
+				$('#address_button').click(function() {
+					$('#street_map').css('display', 'table');
+					google.maps.event.trigger(map, 'resize');
+					codeAddress();
+				});
+			}
+			var geocoder;
+			var map;
+			function initialize() {
+				geocoder = new google.maps.Geocoder();
+				var latlng = new google.maps.LatLng(-34.397, 150.644);
+				var mapOptions = {
+					zoom: 18,
+					center: latlng
+				}
+				map = new google.maps.Map(document.getElementById("street_map"), mapOptions);
+			}
+
+			function codeAddress() {
+				var address = document.getElementById("address").value;
+				geocoder.geocode( { 'address': address}, function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+		                map.setCenter(results[0].geometry.location);
+		                var marker = new google.maps.Marker({
+		                	map: map,
+		                	position: results[0].geometry.location
+		                });
+		                document.getElementById("add_coordx").value = marker.getPosition().lat();
+		                document.getElementById("add_coordy").value = marker.getPosition().lng();
+		            } else {
+		            	alert("Geocode was not successful for the following reason: " + status);
+		            }
+				});
+			}
+
+		</script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtFRgBJC2mWP5RXGEJzWtozjejpiuKY28&callback=initialize"></script>
+		<button class="wellcome button" type="submit">Save Changes</button>
+		<button href="/restaurants/" style="display: inline-block" class="wellcome button" type="submit">Back to search</button>
+	</div>
+</form>
+{% endblock %}
