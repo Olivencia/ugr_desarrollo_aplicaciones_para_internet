@@ -6,7 +6,7 @@ En cada carpeta podrá verse que se realiza en cada uno de ellos.
 
 #Importante
 
-Para el correcto funcionamiento de estos proyectos es necesario tener instalado el framework Flask de Python. Se explica en el fichero Instalación.pdf.
+Para el correcto funcionamiento de estos proyectos es necesario tener instalado el framework Flask de Python y Django.
 
 En el pdf Memoria.pdf se explica lo realizado en las prácticas 2 y 3.
 
