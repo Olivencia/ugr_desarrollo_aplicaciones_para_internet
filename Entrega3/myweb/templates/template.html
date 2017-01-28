@@ -89,87 +89,6 @@
 
 	</div>
 </form>
-<!--<form id="add_restaurant" action="/restaurants/" method="POST">
-	<div class="container register">
-		<div id="restaurant_form">
-			<div>
-				<label><b>Name</b></label>
-				<input type="text" placeholder="Enter Name of Restaurant" name="rname" required>
-
-				<label><b>Cuisine</b></label>
-				<input type="text" placeholder="Enter type of Food" name="rcuisine">
-			</div> 
-
-			<div> 
-				<label><b>Borough</b></label>
-				<input type="text" placeholder="Enter City" name="rborough">
-
-				<label><b>Street</b></label>
-				<input id="address" type="text" placeholder="Enter the street" name="rstreet" required>
-				<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
-			</div> 
-
-			<div> 
-				<label><b>Coord Y</b></label>
-				<input id="add_coordy" type="text" placeholder="Enter Y coord or localize" name="rcoordy" required>
-
-				<label><b>Coord X</b></label>
-				<input id="add_coordx" type="text" placeholder="Enter X coord or localize" name="rcoordx">
-			</div> 
-			<style type="text/css">
-				#street_map {width: 50%; height: 50%; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
-			</style>
-			<body onload="initialize()">
-				<div id="street_map"></div>
-			</body>
-			<script type="text/javascript">
-				function localizeStreet(){
-					$('#address_button').click(function() {
-						$('#street_map').css('display', 'table');
-						google.maps.event.trigger(map, 'resize');
-						codeAddress();
-					});
-				}
-				var geocoder;
-				var map;
-				function initialize() {
-					geocoder = new google.maps.Geocoder();
-					var latlng = new google.maps.LatLng(-34.397, 150.644);
-					var mapOptions = {
-						zoom: 18,
-						center: latlng
-					}
-					map = new google.maps.Map(document.getElementById("street_map"), mapOptions);
-				}
-
-				function codeAddress() {
-					var address = document.getElementById("address").value;
-					geocoder.geocode( { 'address': address}, function(results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
-
-							map.setCenter(results[0].geometry.location);
-							var marker = new google.maps.Marker({
-								map: map,
-								position: results[0].geometry.location
-							});
-							document.getElementById("add_coordx").value = marker.getPosition().lat();
-							document.getElementById("add_coordy").value = marker.getPosition().lng();
-						} else {
-							alert("Geocode was not successful for the following reason: " + status);
-						}
-					});
-				}
-
-			</script>
-			<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtFRgBJC2mWP5RXGEJzWtozjejpiuKY28&callback=initialize"></script>
-			<button class="wellcome button" type="submit">Add</button>
-			{% if 'name' in restaurant %}
-			<h3 style="color: green">Restaurant {{restaurant.name}} added successfully</h3>
-			{% endif %}
-		</div>
-	</div>    
-</form>
--->
 {% endblock %}
 
 
@@ -256,29 +175,7 @@
 			<label><b>Coord X</b></label>
 			{{ form.rcoordx }}	
 		</div>
-		<!--<div>
-			<label><b>Name</b></label>
-			<input type="text" placeholder="{{restaurant.name}}"" name="rname">
 
-			<label><b>Cuisine</b></label>
-			<input type="text" placeholder="{{restaurant.cuisine}}"" name="rcuisine">
-		</div> 
-		<div> 
-			<label><b>Borough</b></label>
-			<input type="text" placeholder="{{restaurant.borough}}" name="rborough">
-
-			<label><b>Street</b></label>
-			<input id="address" type="text" placeholder="{{restaurant.address.street}}" name="rstreet">
-			<button id="address_button" class="wellcome button" type="button" onclick="localizeStreet();">Localize</button>
-
-		</div> 
-		<div> 
-			<label><b>Coord Y</b></label>
-			<input id="add_coordy" type="text" placeholder="{{restaurant.address.coord.0}}" name="rcoordy">
-
-			<label><b>Coord X</b></label>
-			<input id="add_coordx" type="text" placeholder="{{restaurant.address.coord.1}}" name="rcoordx">
-		</div>-->
 		<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function(event){
 			document.getElementById("rname").placeholder = '{{ restaurant.name }}';
@@ -303,7 +200,7 @@
 
 		</script>
 		<style type="text/css">
-			#street_map {width: 50%; height: 50%; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
+			#street_map {width: 50%; height: 400px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; display: none;}
 		</style>
 		<body onload="initialize()">
 			<div id="street_map"></div>

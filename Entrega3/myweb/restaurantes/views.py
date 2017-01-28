@@ -18,10 +18,10 @@ from myweb.forms import addRestaurant, modifyRestaurant
 client = MongoClient('localhost', 27017)
 
 #Twitter API tokens
-consumer_key = 'uyZVP5X4S32jRWVQbxlZo2qUl'
-consumer_secret = 'e0G9BYJrZH6iXkrwiwvwUv29M1ED2TXbwcYLtUc303TqktrHI8'
-access_token = '376689015-77pZAUVX3OOtmDhF0AKMa8lEj2ARMFopPnq6Uxmv'
-access_token_secret = 's5hbVTXdGgU8RwtSTVN8ES50JCuB2QpXWW3EfAxy22sfj'
+consumer_key = 'YOUR KEY HERE'
+consumer_secret = 'YOUR KEY HERE'
+access_token = 'YOUR TOKEN HERE'
+access_token_secret = 'YOUR SECRET TOKEN HERE'
 
 # OAuth process, using the keys and tokens
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -80,6 +80,7 @@ def search(request):
 
 	return render(request, 'template.html', context)
 
+@login_required
 @csrf_exempt
 def edit(request):
 	db = client['test']
